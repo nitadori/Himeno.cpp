@@ -3,6 +3,8 @@
 #include <cstring>
 #include <sys/time.h>
 
+static const float omega=0.8;
+
 struct Matrix {
 	float* m;
 	int mnums;
@@ -125,10 +127,54 @@ void set_param(int is[],char *size)
 	}
 }
 
-float jacobi(int nn, Matrix* a,Matrix* b,Matrix* c,
-       Matrix* p,Matrix* bnd,Matrix* wrk1,Matrix* wrk2)
+float jacobi(int nn, Matrix a,Matrix b,Matrix c,
+       Matrix p,Matrix bnd,Matrix wrk1,Matrix wrk2)
 {
-	return 0.0f;
+	int    imax,jmax,kmax;
+	float  gosa,s0,ss;
+
+	imax= p.mrows-1;
+	jmax= p.mcols-1;
+	kmax= p.mdeps-1;
+
+	gosa = 0.0;
+	for(int n=0 ; n<nn ; n++){
+		gosa = 0.0;
+
+		for(int i=1 ; i<imax; i++)
+			for(int j=1 ; j<jmax ; j++)
+				for(int k=1 ; k<kmax ; k++){
+					s0= a(0,i,j,k)*p(0,i+1,j,  k)
+						+ a(1,i,j,k)*p(0,i,  j+1,k)
+						+ a(2,i,j,k)*p(0,i,  j,  k+1)
+						+ b(0,i,j,k)
+						*( p(0,i+1,j+1,k) - p(0,i+1,j-1,k)
+								- p(0,i-1,j+1,k) + p(0,i-1,j-1,k) )
+						+ b(1,i,j,k)
+						*( p(0,i,j+1,k+1) - p(0,i,j-1,k+1)
+								- p(0,i,j+1,k-1) + p(0,i,j-1,k-1) )
+						+ b(2,i,j,k)
+						*( p(0,i+1,j,k+1) - p(0,i-1,j,k+1)
+								- p(0,i+1,j,k-1) + p(0,i-1,j,k-1) )
+						+ c(0,i,j,k) * p(0,i-1,j,  k)
+						+ c(1,i,j,k) * p(0,i,  j-1,k)
+						+ c(2,i,j,k) * p(0,i,  j,  k-1)
+						+ wrk1(0,i,j,k);
+
+					ss= (s0*a(3,i,j,k) - p(0,i,j,k))*bnd(0,i,j,k);
+
+					gosa+= ss*ss;
+					wrk2(0,i,j,k)= p(0,i,j,k) + omega*ss;
+				}
+
+		for(int i=1 ; i<imax ; i++)
+			for(int j=1 ; j<jmax ; j++)
+				for(int k=1 ; k<kmax ; k++)
+					p(0,i,j,k)= wrk2(0,i,j,k);
+
+	} /* end n loop */
+
+	return (gosa);
 }
 
 int main(int argc, char *argv[])
@@ -203,7 +249,7 @@ int main(int argc, char *argv[])
 	printf(" Measure the performance in %d times.\n\n",nn);
 
 	cpu0= second();
-	gosa= jacobi(nn,&a,&b,&c,&p,&bnd,&wrk1,&wrk2);
+	gosa= jacobi(nn,a,b,c,p,bnd,wrk1,wrk2);
 	cpu1= second();
 	cpu= cpu1 - cpu0;
 	flop= fflop(imax,jmax,kmax);
@@ -219,7 +265,7 @@ int main(int argc, char *argv[])
 	printf(" Wait for a while\n\n");
 
 	cpu0 = second();
-	gosa = jacobi(nn,&a,&b,&c,&p,&bnd,&wrk1,&wrk2);
+	gosa = jacobi(nn,a,b,c,p,bnd,wrk1,wrk2);
 	cpu1 = second();
 	cpu = cpu1 - cpu0;
 
