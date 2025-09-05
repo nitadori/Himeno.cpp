@@ -43,6 +43,8 @@
 
 #define MR(mt,n,r,c,d)  mt->m[(n) * mt->mrows * mt->mcols * mt->mdeps + (r) * mt->mcols* mt->mdeps + (c) * mt->mdeps + (d)]
 
+typedef double gosa_t;
+
 struct Mat {
   float* m;
   int mnums;
@@ -59,7 +61,7 @@ void clearMat(Matrix* Mat);
 void set_param(int i[],char *size);
 void mat_set(Matrix* Mat,int l,float z);
 void mat_set_init(Matrix* Mat);
-float jacobi(int n,Matrix* M1,Matrix* M2,Matrix* M3,
+gosa_t jacobi(int n,Matrix* M1,Matrix* M2,Matrix* M3,
              Matrix* M4,Matrix* M5,Matrix* M6,Matrix* M7);
 double fflop(int,int,int);
 double mflops(int,double,double);
@@ -73,7 +75,8 @@ main(int argc, char *argv[])
 {
   int    nn;
   int    imax,jmax,kmax,mimax,mjmax,mkmax,msize[3];
-  float  gosa,target;
+  gosa_t  gosa;
+  float  target;
   double  cpu0,cpu1,cpu,flop;
   char   size[10];
 
@@ -279,12 +282,13 @@ mat_set_init(Matrix* Mat)
           /(float)((Mat->mrows - 1)*(Mat->mrows - 1));
 }
 
-float
+gosa_t
 jacobi(int nn, Matrix* a,Matrix* b,Matrix* c,
        Matrix* p,Matrix* bnd,Matrix* wrk1,Matrix* wrk2)
 {
   int    i,j,k,n,imax,jmax,kmax;
-  float  gosa,s0,ss;
+  gosa_t gosa;
+  float  s0,ss;
 
   imax= p->mrows-1;
   jmax= p->mcols-1;
@@ -316,7 +320,7 @@ jacobi(int nn, Matrix* a,Matrix* b,Matrix* c,
 
           ss= (s0*MR(a,3,i,j,k) - MR(p,0,i,j,k))*MR(bnd,0,i,j,k);
 
-          gosa+= ss*ss;
+          gosa += (gosa_t)ss*ss;
           MR(wrk2,0,i,j,k)= MR(p,0,i,j,k) + omega*ss;
         }
 

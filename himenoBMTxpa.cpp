@@ -4,6 +4,7 @@
 #include <sys/time.h>
 
 static const float omega=0.8;
+using gosa_t = double;
 
 struct Matrix {
 	float* m;
@@ -127,11 +128,12 @@ void set_param(int is[],char *size)
 	}
 }
 
-float jacobi(int nn, Matrix a,Matrix b,Matrix c,
+gosa_t jacobi(int nn, Matrix a,Matrix b,Matrix c,
        Matrix p,Matrix bnd,Matrix wrk1,Matrix wrk2)
 {
 	int    imax,jmax,kmax;
-	float  gosa,s0,ss;
+	gosa_t  gosa;
+	float  s0,ss;
 
 	imax= p.mrows-1;
 	jmax= p.mcols-1;
@@ -163,7 +165,7 @@ float jacobi(int nn, Matrix a,Matrix b,Matrix c,
 
 					ss= (s0*a(3,i,j,k) - p(0,i,j,k))*bnd(0,i,j,k);
 
-					gosa+= ss*ss;
+					gosa += (gosa_t)ss*ss;
 					wrk2(0,i,j,k)= p(0,i,j,k) + omega*ss;
 				}
 
@@ -181,7 +183,8 @@ int main(int argc, char *argv[])
 {
 	int    nn;
 	int    imax,jmax,kmax,mimax,mjmax,mkmax,msize[3];
-	float  gosa,target;
+	gosa_t gosa;
+	float  target;
 	double cpu0,cpu1,cpu,flop;
 	char   size[10];
 
