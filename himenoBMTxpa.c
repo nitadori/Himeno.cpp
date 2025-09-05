@@ -163,7 +163,7 @@ main(int argc, char *argv[])
   printf(" Gosa : %e \n",gosa);
   printf(" MFLOPS measured : %f\tcpu : %f\n",mflops(nn,cpu,flop),cpu);
   printf(" Score based on Pentium III 600MHz using Fortran 77: %f\n",
-         mflops(nn,cpu,flop)/82,84);
+         mflops(nn,cpu,flop)/82.84);
 
   /*
    *   Matrix free
