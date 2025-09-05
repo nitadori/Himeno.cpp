@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
 	jmax= mjmax-1;
 	kmax= mkmax-1;
 
-	target = 60.0;
+	target = 10.0;
 
 	printf("mimax = %d mjmax = %d mkmax = %d\n",mimax,mjmax,mkmax);
 	printf("imax = %d jmax = %d kmax =%d\n",imax,jmax,kmax);
@@ -256,6 +256,7 @@ int main(int argc, char *argv[])
 
 	printf(" MFLOPS: %f time(s): %f %e\n\n",
 			mflops(nn,cpu,flop),cpu,gosa);
+	printf("  gosa hex : %A\n", gosa);
 
 	nn= (int)(target/(cpu/3.0));
 
