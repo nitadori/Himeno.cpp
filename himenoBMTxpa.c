@@ -71,7 +71,7 @@ Matrix  a,b,c,p,bnd,wrk1,wrk2;
 int
 main(int argc, char *argv[])
 {
-  int    i,j,k,nn;
+  int    nn;
   int    imax,jmax,kmax,mimax,mjmax,mkmax,msize[3];
   float  gosa,target;
   double  cpu0,cpu1,cpu,flop;
@@ -175,7 +175,7 @@ main(int argc, char *argv[])
   clearMat(&a);
   clearMat(&b);
   clearMat(&c);
-  
+
   return (0);
 }
 
@@ -269,8 +269,7 @@ mat_set(Matrix* Mat, int l, float val)
 void
 mat_set_init(Matrix* Mat)
 {
-  int  i,j,k,l;
-  float tt;
+  int  i,j,k;
 
   for(i=0; i<Mat->mrows; i++)
     for(j=0; j<Mat->mcols; j++)
@@ -290,6 +289,7 @@ jacobi(int nn, Matrix* a,Matrix* b,Matrix* c,
   jmax= p->mcols-1;
   kmax= p->mdeps-1;
 
+  gosa = 0.0;
   for(n=0 ; n<nn ; n++){
     gosa = 0.0;
 
@@ -326,7 +326,7 @@ jacobi(int nn, Matrix* a,Matrix* b,Matrix* c,
     
   } /* end n loop */
 
-  return(gosa);
+  return (gosa);
 }
 
 double
