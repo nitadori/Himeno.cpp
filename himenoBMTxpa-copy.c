@@ -46,7 +46,7 @@
 typedef double gosa_t;
 
 struct Mat {
-  float* m;
+  float* restrict m;
   int mnums;
   int mrows;
   int mcols;
