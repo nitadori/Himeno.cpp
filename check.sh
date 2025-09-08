@@ -1,8 +1,8 @@
-#CC=gcc-14
-#CXX=g++-14
-CC=clang-21
-CXX=clang-21
-FLAGS="-Wall -O2"
+CC=gcc-14
+CXX=g++-14
+#CC=clang-21
+#CXX=clang-21
+FLAGS="-Wall -O2 -march=native"
 $CXX $FLAGS himenoBMTxpa.cpp    -o cpp.out
 $CC  $FLAGS himenoBMTxpa.c      -o c.out
 $CC  $FLAGS himenoBMTxpa-copy.c -o copy.out

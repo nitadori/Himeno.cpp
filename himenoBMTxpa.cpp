@@ -3,21 +3,25 @@
 #include <cstring>
 #include <sys/time.h>
 
+#define RESTRICT __restrict
+
 static const float omega=0.8;
 using gosa_t = double;
 
 struct Matrix {
-	float* m;
+	float * RESTRICT m;
 	int mnums;
 	int mrows;
 	int mcols;
 	int mdeps;
 
 	float &operator()(int n, int r, int c, int d){
-		return m[(n) * mrows * mcols * mdeps + (r) * mcols * mdeps + (c) * mdeps + (d)];
+		// return m[(n) * mrows * mcols * mdeps + (r) * mcols * mdeps + (c) * mdeps + (d)];
+		return m[(( (n) * mrows + (r)) * mcols + (c)) * mdeps + (d)];
 	}
 	const float &operator()(int n, int r, int c, int d) const {
-		return m[(n) * mrows * mcols * mdeps + (r) * mcols * mdeps + (c) * mdeps + (d)];
+		// return m[(n) * mrows * mcols * mdeps + (r) * mcols * mdeps + (c) * mdeps + (d)];
+		return m[(( (n) * mrows + (r)) * mcols + (c)) * mdeps + (d)];
 	}
 
 	int newMat(int mnums,int mrows, int mcols, int mdeps)
@@ -128,6 +132,7 @@ void set_param(int is[],char *size)
 	}
 }
 
+__attribute__((noinline))
 gosa_t jacobi(int nn, Matrix a,Matrix b,Matrix c,
        Matrix p,Matrix bnd,Matrix wrk1,Matrix wrk2)
 {

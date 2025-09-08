@@ -335,6 +335,7 @@ jacobi(int nn, Matrix* a,Matrix* b,Matrix* c,
   return (gosa);
 }
 #else
+__attribute__((noinline))
 gosa_t
 jacobi(int nn, Matrix* a,Matrix* b,Matrix* c,
        Matrix* p,Matrix* bnd,Matrix* wrk1,Matrix* wrk2)

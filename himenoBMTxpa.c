@@ -282,6 +282,7 @@ mat_set_init(Matrix* Mat)
           /(float)((Mat->mrows - 1)*(Mat->mrows - 1));
 }
 
+__attribute__((noinline))
 gosa_t
 jacobi(int nn, Matrix* a,Matrix* b,Matrix* c,
        Matrix* p,Matrix* bnd,Matrix* wrk1,Matrix* wrk2)
